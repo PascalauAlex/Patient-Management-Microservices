@@ -1,5 +1,7 @@
 package com.pm.patientservice.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,13 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /* Attach a global exception to all controller from the app. (Controller Advice)
-*  Methods :
-*   - handlerValidationException ( throws a 400 BadRequest if any of the DTO fields validation fails)
-*  */
+ *  Methods :
+ *   - handlerValidationException ( throws a 400 BadRequest if any of the DTO fields validation fails)
+ *  */
 
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handlerValidationException(MethodArgumentNotValidException ex) {
@@ -24,6 +28,14 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        Map<String, String> errors = new HashMap<>();
+        log.warn("[Email address already exists]: {} ",ex.getMessage());
+        errors.put("message","Email already exists");
         return ResponseEntity.badRequest().body(errors);
     }
 }
