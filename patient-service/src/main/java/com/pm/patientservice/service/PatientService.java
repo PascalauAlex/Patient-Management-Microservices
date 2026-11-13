@@ -9,6 +9,7 @@ import com.pm.patientservice.model.Patient;
 import com.pm.patientservice.repository.PatientRepository;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,6 +63,11 @@ public class PatientService {
 
         return PatientMapper.toDTO(updatedPatient);
 
+    }
+
+
+    public void deletePatient(UUID id){
+        patientRepository.deleteById(id);
     }
 
 
