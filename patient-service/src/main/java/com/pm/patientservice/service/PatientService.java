@@ -7,9 +7,8 @@ import com.pm.patientservice.exception.PatientNotFoundException;
 import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.Patient;
 import com.pm.patientservice.repository.PatientRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.UUID;
 
 @Service
 public class PatientService {
-    private PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
 
     public PatientService(PatientRepository patientRepository){
         // Dependency injection
@@ -27,10 +26,9 @@ public class PatientService {
 
     public List<PatientResponseDTO> getPatients() {
         List<Patient> patients = patientRepository.findAll();
-        List<PatientResponseDTO> patientResponseDTOs = patients.stream()
+        return patients.stream()
                         .map(PatientMapper::toDTO) // patient -> PatientMapper(patient) instead of lambda
                         .toList();
-        return patientResponseDTOs;
     }
 
 
